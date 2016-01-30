@@ -123,15 +123,27 @@ class STLParser
   end
 
   def x_dimensions()
-    (@max_x - @min_x).abs
+    if(@max_x > @min_x)
+      return @max_x - @min_x
+    else
+      return @min_x - @max_x
+    end
   end
 
   def y_dimensions()
-    (@max_y - @min_y).abs
+    if(@max_y > @min_y)
+      return @max_y - @min_y
+    else
+      return @min_y - @max_y
+    end
   end
 
   def z_dimensions()
-    (@max_z - @min_z).abs
+    if(@max_z > @min_z)
+      return @max_z - @min_z
+    else
+      return @min_z - @max_z
+    end
   end
 
   def process(infilename)

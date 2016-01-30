@@ -4,7 +4,6 @@ class STLParser
     @normals = []
     @points = []
     @triangles = []
-    @bytecount = []
     @fb = [] # debug list
     @volume = 0
     @max_x = 0
@@ -40,47 +39,70 @@ class STLParser
       p1 = custom_unpack("eee", 12)
       p2 = custom_unpack("eee", 12)
       p3 = custom_unpack("eee", 12)
-      b  = custom_unpack("S!", 2)
+
+      # To get past the space filler
+      @f.read(2)
     else
-      n  = 0
-      p1 = 0
-      p2 = 0
-      p3 = 0
-      b  = 0
+      temp = @f.gets
+      unless temp.include? 'endsolid'
+        # Get the normal
+        temp.sub!(/facet normal/, '').strip!
+        n  = temp.split(' ').map{ |num| num.to_f }
+
+        # get past 'outer loop'
+        @f.gets
+
+        # get vertex one
+        temp = @f.gets
+        p1 = temp.sub(/vertex/, '').split(' ').map{ |num| num.to_f }
+
+        # get vertex two
+        temp = @f.gets
+        p2 = temp.sub(/vertex/, '').split(' ').map{ |num| num.to_f }
+
+        # get vertex three
+        temp = @f.gets
+        p3 = temp.sub(/vertex/, '').split(' ').map{ |num| num.to_f }
+
+        # Get past endloop
+        @f.gets
+        # Get past endfacet
+        temp = @f.gets
+      end
     end
+    unless @f.eof
+      @min_x = p1[0] if(@min_x > p1[0])
+      @min_x = p2[0] if(@min_x > p2[0]) 
+      @min_x = p3[0] if(@min_x > p3[0]) 
 
-    @min_x = p1[0] if(@min_x > p1[0])
-    @min_x = p2[0] if(@min_x > p2[0]) 
-    @min_x = p3[0] if(@min_x > p3[0]) 
+      @min_y = p1[1] if(@min_y > p1[1]) 
+      @min_y = p2[1] if(@min_y > p2[1]) 
+      @min_y = p3[1] if(@min_y > p3[1]) 
 
-    @min_y = p1[1] if(@min_y > p1[1]) 
-    @min_y = p2[1] if(@min_y > p2[1]) 
-    @min_y = p3[1] if(@min_y > p3[1]) 
+      @min_z = p2[2] if(@min_z > p2[2]) 
+      @min_z = p2[2] if(@min_z > p2[2]) 
+      @min_z = p3[2] if(@min_z > p3[2]) 
 
-    @min_z = p2[2] if(@min_z > p2[2]) 
-    @min_z = p2[2] if(@min_z > p2[2]) 
-    @min_z = p3[2] if(@min_z > p3[2]) 
+      @max_x = p1[0] if(@max_x < p1[0])
+      @max_x = p2[0] if(@max_x < p2[0]) 
+      @max_x = p3[0] if(@max_x < p3[0]) 
 
-    @max_x = p1[0] if(@max_x < p1[0])
-    @max_x = p2[0] if(@max_x < p2[0]) 
-    @max_x = p3[0] if(@max_x < p3[0]) 
+      @max_y = p1[1] if(@max_y < p1[1]) 
+      @max_y = p2[1] if(@max_y < p2[1]) 
+      @max_y = p3[1] if(@max_y < p3[1]) 
 
-    @max_y = p1[1] if(@max_y < p1[1]) 
-    @max_y = p2[1] if(@max_y < p2[1]) 
-    @max_y = p3[1] if(@max_y < p3[1]) 
+      @max_z = p2[2] if(@max_z < p2[2]) 
+      @max_z = p2[2] if(@max_z < p2[2]) 
+      @max_z = p3[2] if(@max_z < p3[2]) 
 
-    @max_z = p2[2] if(@max_z < p2[2]) 
-    @max_z = p2[2] if(@max_z < p2[2]) 
-    @max_z = p3[2] if(@max_z < p3[2]) 
-
-    @normals.push(n)
-    l = @points.length
-    @points.push(p1)
-    @points.push(p2)
-    @points.push(p3)
-    @triangles.push(l)
-    @bytecount.push(b[0])
-    return signedVolumeOfTriangle(p1,p2,p3)
+      @normals.push(n)
+      l = @points.length
+      @points.push(p1)
+      @points.push(p2)
+      @points.push(p3)
+      @triangles.push(l)
+      return signedVolumeOfTriangle(p1,p2,p3)
+    end
   end
 
   def read_length()
@@ -88,7 +110,7 @@ class STLParser
     return length[0]
   end
 
-  def read_header()
+  def read_binary_header()
     @f.seek(@f.tell()+80)
   end
 
@@ -123,18 +145,24 @@ class STLParser
 
     # Go back to beginning of the file
     @f.seek(0)
-
-    read_header()
-    @num_triangles = read_length()
-    begin
-      while true do
-        totalVolume +=read_triangle()
-      end
-    rescue
-      # This means it is the end of file which is a desired error here
-      nil
+    
+    # Get past the header info that we don't care about
+    if(@file_type === :binary)
+      read_binary_header()
+      @num_triangles = read_length()
+    else
+      @f.gets
+    end
+    
+    # Keep repeating until the end of the file is reached
+    while @f.eof === false do
+      added_volume = read_triangle()
+      totalVolume += added_volume if added_volume
     end
 
     @volume = totalVolume
+
+    # Close the file
+    @f.close
   end
 end

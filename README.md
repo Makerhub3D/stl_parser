@@ -1,6 +1,6 @@
 # STL Parser
 
-A Gem for calculating the bounding box and volume for an STL file. Currently only binary files are supported. Ascii files are coming soon.
+A Gem for calculating the bounding box and volume for an STL file.
 
 
 ## Installation

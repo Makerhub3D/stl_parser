@@ -6,12 +6,12 @@ class STLParser
     @triangles = []
     @fb = [] # debug list
     @volume = 0
-    @max_x = 0
-    @max_y = 0
-    @max_z = 0
-    @min_x = 0
-    @min_y = 0
-    @min_z = 0
+    @max_x = nil
+    @max_y = nil
+    @max_z = nil
+    @min_x = nil
+    @min_y = nil
+    @min_z = nil
     @num_triangles = 0
     @file_type = :binary
   end
@@ -71,29 +71,29 @@ class STLParser
       end
     end
     unless @f.eof
-      @min_x = p1[0] if(@min_x > p1[0])
-      @min_x = p2[0] if(@min_x > p2[0]) 
-      @min_x = p3[0] if(@min_x > p3[0]) 
-
-      @min_y = p1[1] if(@min_y > p1[1]) 
-      @min_y = p2[1] if(@min_y > p2[1]) 
-      @min_y = p3[1] if(@min_y > p3[1]) 
-
-      @min_z = p1[2] if(@min_z > p1[2]) 
-      @min_z = p2[2] if(@min_z > p2[2]) 
-      @min_z = p3[2] if(@min_z > p3[2]) 
-
-      @max_x = p1[0] if(@max_x < p1[0])
-      @max_x = p2[0] if(@max_x < p2[0]) 
-      @max_x = p3[0] if(@max_x < p3[0]) 
-
-      @max_y = p1[1] if(@max_y < p1[1]) 
-      @max_y = p2[1] if(@max_y < p2[1]) 
-      @max_y = p3[1] if(@max_y < p3[1]) 
-
-      @max_z = p1[2] if(@max_z < p1[2]) 
-      @max_z = p2[2] if(@max_z < p2[2]) 
-      @max_z = p3[2] if(@max_z < p3[2]) 
+      @min_x = p1[0] if(@min_x.nil? || @min_x > p1[0])
+      @min_x = p2[0] if(@min_x.nil? || @min_x > p2[0]) 
+      @min_x = p3[0] if(@min_x.nil? || @min_x > p3[0]) 
+                                       
+      @min_y = p1[1] if(@min_y.nil? || @min_y > p1[1]) 
+      @min_y = p2[1] if(@min_y.nil? || @min_y > p2[1]) 
+      @min_y = p3[1] if(@min_y.nil? || @min_y > p3[1]) 
+                                       
+      @min_z = p1[2] if(@min_z.nil? || @min_z > p1[2]) 
+      @min_z = p2[2] if(@min_z.nil? || @min_z > p2[2]) 
+      @min_z = p3[2] if(@min_z.nil? || @min_z > p3[2]) 
+                                       
+      @max_x = p1[0] if(@max_x.nil? || @max_x < p1[0])
+      @max_x = p2[0] if(@max_x.nil? || @max_x < p2[0]) 
+      @max_x = p3[0] if(@max_x.nil? || @max_x < p3[0]) 
+                                       
+      @max_y = p1[1] if(@max_y.nil? || @max_y < p1[1]) 
+      @max_y = p2[1] if(@max_y.nil? || @max_y < p2[1]) 
+      @max_y = p3[1] if(@max_y.nil? || @max_y < p3[1]) 
+                                       
+      @max_z = p1[2] if(@max_z.nil? || @max_z < p1[2]) 
+      @max_z = p2[2] if(@max_z.nil? || @max_z < p2[2]) 
+      @max_z = p3[2] if(@max_z.nil? || @max_z < p3[2]) 
 
       @normals.push(n)
       l = @points.length

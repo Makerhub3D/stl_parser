@@ -14,6 +14,7 @@ class STLParser
     @min_y = 0
     @min_z = 0
     @num_triangles = 0
+    @file_type = :binary
   end
 
   # Calculate volume fo the 3D mesh using Tetrahedron volume
@@ -34,11 +35,19 @@ class STLParser
   end
 
   def read_triangle()
-    n  = custom_unpack("eee", 12)
-    p1 = custom_unpack("eee", 12)
-    p2 = custom_unpack("eee", 12)
-    p3 = custom_unpack("eee", 12)
-    b  = custom_unpack("S!", 2)
+    if(@file_type === :binary)
+      n  = custom_unpack("eee", 12)
+      p1 = custom_unpack("eee", 12)
+      p2 = custom_unpack("eee", 12)
+      p3 = custom_unpack("eee", 12)
+      b  = custom_unpack("S!", 2)
+    else
+      n  = 0
+      p1 = 0
+      p2 = 0
+      p3 = 0
+      b  = 0
+    end
 
     @min_x = p1[0] if(@min_x > p1[0])
     @min_x = p2[0] if(@min_x > p2[0]) 
@@ -108,6 +117,13 @@ class STLParser
     totalVolume = 0
 
     @f = open(infilename, "rb")
+
+    # Set the file type to ascii if needed
+    @file_type = :ascii if(@f.gets.include? "solid")
+
+    # Go back to beginning of the file
+    @f.seek(0)
+
     read_header()
     @num_triangles = read_length()
     begin

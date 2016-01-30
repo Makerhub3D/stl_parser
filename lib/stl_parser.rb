@@ -79,7 +79,7 @@ class STLParser
       @min_y = p2[1] if(@min_y > p2[1]) 
       @min_y = p3[1] if(@min_y > p3[1]) 
 
-      @min_z = p2[2] if(@min_z > p2[2]) 
+      @min_z = p1[2] if(@min_z > p1[2]) 
       @min_z = p2[2] if(@min_z > p2[2]) 
       @min_z = p3[2] if(@min_z > p3[2]) 
 
@@ -91,7 +91,7 @@ class STLParser
       @max_y = p2[1] if(@max_y < p2[1]) 
       @max_y = p3[1] if(@max_y < p3[1]) 
 
-      @max_z = p2[2] if(@max_z < p2[2]) 
+      @max_z = p1[2] if(@max_z < p1[2]) 
       @max_z = p2[2] if(@max_z < p2[2]) 
       @max_z = p3[2] if(@max_z < p3[2]) 
 

@@ -115,7 +115,7 @@ class STLParser
   end
 
   def volume()
-    @volume
+    @volume.abs
   end
 
   def triangles()

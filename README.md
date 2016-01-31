@@ -1,10 +1,10 @@
 # STL Parser
 
-A Gem for calculating the bounding box and volume for an STL file.
+A ruby gem for calculating the bounding box and volume for an STL file.
 
 
 ## Installation
-gem install stl_parser
+bundle install stl_parser
 
 ## Usage
 

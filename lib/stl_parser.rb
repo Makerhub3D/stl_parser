@@ -30,7 +30,8 @@ class STLParser
   def custom_unpack(sig, num_lines)
     str = @f.read(num_lines)
     @fb.push(str)
-    return str.unpack(sig)
+    return str.unpack(sig) if str
+    return 0
   end
 
   def read_triangle()

@@ -166,7 +166,17 @@ class STLParser
     @f = open(infilename, "rb")
 
     # Set the file type to ascii if needed
-    @file_type = :ascii if(@f.gets.include? "solid")
+    binary_found = false
+    @f.each_line do |line|
+      if(@f.gets.ascii_only? == false)
+        binary_found = true
+        break
+      end
+    end
+
+    unless(binary_found)
+      @file_type = :ascii
+    end
 
     # Go back to beginning of the file
     @f.seek(0)

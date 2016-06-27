@@ -19,3 +19,7 @@ bundle install stl_parser
 	x_dimensions = parser.x_dimensions
 	y_dimensions = parser.y_dimensions
 	z_dimensions = parser.z_dimensions
+
+#Publishing
+gem build stl_parser.gemspec
+gem push stl_parser-x.x.x.gem

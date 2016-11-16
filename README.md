@@ -21,5 +21,6 @@ bundle install stl_parser
 	z_dimensions = parser.z_dimensions
 
 #Publishing
+Update the version in stl_parser.gemspec
 gem build stl_parser.gemspec
 gem push stl_parser-x.x.x.gem

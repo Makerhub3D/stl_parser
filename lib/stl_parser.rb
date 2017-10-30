@@ -1,4 +1,5 @@
 class STLParser
+  require 'open-uri'
 
   def resetVariables()
     @normals = []

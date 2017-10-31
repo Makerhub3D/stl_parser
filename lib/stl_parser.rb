@@ -164,7 +164,7 @@ class STLParser
   def process(infilename)
     resetVariables()
 
-    @f = open(infilename).read
+    @f = open(infilename)
 
     # Set the file type to ascii if needed
     binary_found = false

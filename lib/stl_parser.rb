@@ -169,7 +169,7 @@ class STLParser
     # Set the file type to ascii if needed
     binary_found = false
     @f.each_line do |line|
-      if(@f.gets.ascii_only? == false)
+      if(line.ascii_only? == false)
         binary_found = true
         break
       end
